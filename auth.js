@@ -4,12 +4,19 @@ var express = require('express');
 var router = express.Router();
 var User = require('./models/User.js');
 
-router.post('/register', (req, res) => {
+router.post('/register', async (req, res) => {
     var userData = req.body;
 
-    var user = new User(userData);
+    var existingUser = await User.findOne({ email: userData.email });
 
-    user.save((err, result) => {
+    if (existingUser) {
+        return res.status(500)
+            .send({ message: 'Invalid email' });
+    }
+
+    var newUser = new User(userData);
+
+    newUser.save((err, result) => {
         if (err) {
             return res.status(500)
             .send({ message: 'Error saving user' });
