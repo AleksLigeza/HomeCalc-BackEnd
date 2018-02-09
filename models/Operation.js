@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 
 var operationSchema = new mongoose.Schema({
     date: Date,
+    createDate: Date,
     userId: String,
     income: Boolean,
     amount: Number,

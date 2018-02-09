@@ -16,7 +16,7 @@ router.get('/history/:skip', auth.checkAuthenticated, async (req, res) => {
     var history = await Operation.find({ userId: user, cycleId: { $ne: '0' } })
         .skip(skip)
         .limit(10)
-        .sort({ date: -1 });
+        .sort({ date: -1 , createDate: -1 });
 
     res.status(200).send(history);
 
@@ -51,6 +51,8 @@ router.post('/create', auth.checkAuthenticated, (req, res) => {
     operationData.userId = req.userId;
 
     var newOpeartion = new Operation(operationData);
+    newOpeartion.date.setHours(0,0,0,0);
+    newOpeartion.createDate = Date();
 
     newOpeartion.save((err, result) => {
         if (err) {
@@ -67,6 +69,7 @@ router.put('/update', auth.checkAuthenticated, async (req, res) => {
     operationData.userId = req.userId;
 
     var newOpeartion = new Operation(operationData);
+    newOpeartion.date.setHours(0,0,0,0);
 
     var oldOperation = await Operation.findOne({ _id: operationData.id, userId: req.userId }, (err, result) => {
         if (err) {
@@ -77,8 +80,8 @@ router.put('/update', auth.checkAuthenticated, async (req, res) => {
     oldOperation.userId = newOpeartion.userId || oldOperation.userId;
     oldOperation.date = newOpeartion.date || oldOperation.date;
     oldOperation.income = newOpeartion.income;
-    oldOperation.amount = newOpeartion.amount || oldOperation.amount;
-    oldOperation.description = newOpeartion.description || oldOperation.description;
+    oldOperation.amount = newOpeartion.amount;
+    oldOperation.description = newOpeartion.description;
     oldOperation.cycleId = newOpeartion.cycleId || oldOperation.cycleId;
 
     oldOperation.save((err, saveResult) => {
@@ -96,7 +99,7 @@ router.get('/cycles/:skip', auth.checkAuthenticated, async (req, res) => {
     var history = await Operation.find({ userId: user, cycleId: '0' })
         .skip(skip)
         .limit(10)
-        .sort({ date: -1 });
+        .sort({ date: 1, createDate: -1 });
 
     res.status(200).send(history);
 })
