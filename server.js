@@ -20,19 +20,24 @@ var posts = [
 app.use(cors());
 app.use(bodyParser.json());
 
-mongoose.connect('mongodb://test:test@ds161306.mlab.com:61306/homecalc', (err) => {
+// mongoose.connect('mongodb://test:test@ds161306.mlab.com:61306/homecalc', (err) => {
+mongoose.connect('mongodb://localhost:27017/homecalc', (err) => {
     if (!err) {
         console.log('connected to mongo')
     }
 });
 
+app.use(function(req,res,next){
+    setTimeout(next, 1)
+  });
+
 app.use('/auth', auth.router);
 app.use('/operations', operation.router);
 app.use('/account', account.router);
 
-app.use(function errorHandler (err, req, res, next) {
+app.use(function errorHandler(err, req, res, next) {
     res.status(500)
     res.render('error', { error: err })
-  });
+});
 
 app.listen(3000);

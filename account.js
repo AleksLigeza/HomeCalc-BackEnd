@@ -7,9 +7,7 @@ var Operation = require('./models/Operation.js')
 var auth = require('./auth.js')
 
 router.post('/changeEmail', auth.checkAuthenticated, async (req, res) => {
-
     var email = req.body.email;
-
     var user = await User.findById(req.userId, (err, result) => {
         if (err) {
             return res.status(500).send(err);
@@ -17,7 +15,6 @@ router.post('/changeEmail', auth.checkAuthenticated, async (req, res) => {
     });
 
     user.email = email;
-
     user.save((err, saveResult) => {
         if (err) {
             console.error('Saving error');
@@ -28,9 +25,7 @@ router.post('/changeEmail', auth.checkAuthenticated, async (req, res) => {
 });
 
 router.post('/changePassword', auth.checkAuthenticated, async (req, res) => {
-
     var password = req.body.password;
-
     var user = await User.findById(req.userId, (err, result) => {
         if (err) {
             return res.status(500).send(err);
@@ -38,7 +33,6 @@ router.post('/changePassword', auth.checkAuthenticated, async (req, res) => {
     });
 
     user.password = password;
-
     user.save((err, saveResult) => {
         if (err) {
             console.error('Saving error');

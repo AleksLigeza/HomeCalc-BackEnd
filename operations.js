@@ -10,6 +10,17 @@ var auth = require('./auth.js')
 //cycleId === '0' operacja zdefiniowana
 //cycleId !== '-1' && cycleId !== '-1' operacja podlegajaca pod zdefniowana
 
+router.get('/history/:skip', auth.checkAuthenticated, async (req, res) => {
+    var user = req.userId;
+    var skip = parseInt(req.params.skip);
+    var history = await Operation.find({ userId: user, cycleId: { $ne: '0' } })
+        .skip(skip)
+        .limit(10)
+        .sort({ date: -1, createDate: -1 });
+
+    res.status(200).send(history);
+})
+
 router.get('/historyWithFilters/:skip/:amountFrom/:amountTo/:description/:dateSince/:dateTo/:type', auth.checkAuthenticated, async (req, res) => {
     var user = req.userId;
 
@@ -40,17 +51,6 @@ router.get('/historyWithFilters/:skip/:amountFrom/:amountTo/:description/:dateSi
     });
     history = history
         .slice(skip, skip+10);
-
-    res.status(200).send(history);
-})
-
-router.get('/history/:skip', auth.checkAuthenticated, async (req, res) => {
-    var user = req.userId;
-    var skip = parseInt(req.params.skip);
-    var history = await Operation.find({ userId: user, cycleId: { $ne: '0' } })
-        .skip(skip)
-        .limit(10)
-        .sort({ date: -1, createDate: -1 });
 
     res.status(200).send(history);
 })
@@ -147,8 +147,8 @@ router.get('/cycle/:id', auth.checkAuthenticated, async (req, res) => {
 })
 
 router.get('/summary', auth.checkAuthenticated, async (req, res) => {
-    var user = req.userId;
 
+    var user = req.userId;
     var bills = 0;
     var income = 0;
     var lastMonthBills = 0;
