@@ -42,7 +42,7 @@ router.get('/historyWithFilters/:skip/:amountFrom/:amountTo/:description/:dateSi
                 if (element.income === true && type == 1 ||
                     element.income === false && type == 2 ||
                     type === 0) {
-                    if (element.description.indexOf(description) !== -1 || description === '0null') {
+                    if (element.description.toLowerCase().indexOf(description.toLowerCase()) !== -1 || description === '0null') {
                         return element;
                     }
                 }
